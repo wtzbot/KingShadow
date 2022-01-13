@@ -1,9 +1,8 @@
 ## Thanks for Everything 
 ### We will always remember you..
 
-- [Yusuf Usta](https://github.com/yusufusta)
-- [@fusufs](https://t.me/fusufs)
-
+- [shadow](https://github.com/wtzbot)
+- [@chamith](https://t.me/chamith343)
 <p align="center">
   <a href="https://github.com/phaticusthiccy/WhatsAsenaDuplicated/fork">
     <img src="https://img.shields.io/github/forks/phaticusthiccy/WhatsAsenaDuplicated?label=Fork&style=social">

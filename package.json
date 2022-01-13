@@ -1,8 +1,8 @@
 {
-  "name": "WhatsAsenaDuplicated",
+  "name": "KingShadow",
   "version": "1.3.6",
   "description": "WhatsAsena project - a Whatsapp userbot helping to improve your Whatsapp experience.",
-  "main": "./WhatsAsenaDuplicated/bot.js",
+  "main": "./KingShadow/bot.js",
   "scripts": {
     "start": "supervisor -s bot.js"
   },

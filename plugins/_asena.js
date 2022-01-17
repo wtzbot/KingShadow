@@ -6,226 +6,118 @@ you may not use this file except in compliance with the License.
 WhatsAsena - Yusuf Usta
 */
 
-const Asena = require('../events');
-const Config = require('../config');
-const {MessageType} = require('@adiwajshing/baileys');
+const Asena = require("../Utilis/events")
+const Config = require("../config")
+const { lydia, getLydia, setLydia } = require("../Utilis/lydia")
+const { getName, readmore } = require("../Utilis/download")
+const Language = require("../language")
+const { textToStylist, addSpace } = require("../Utilis/Misc")
+const Lang = Language.getString("_asena")
 
-const Language = require('../language');
-const Lang = Language.getString('_asena');
-
-if (Config.WORKTYPE == 'private') {
-
-    Asena.addCommand({pattern: 'asena ?(.*)', fromMe: true, dontAddCommandList: true}, (async (message, match) => {
-
-        var CMD_HELP = '';
-        if (match[1] === '') {
-            Asena.commands.map(
-                async (command) =>  {
-                    if (command.dontAddCommandList || command.pattern === undefined) return;
-                    try {
-                        var match = command.pattern.toString().match(/(\W*)([A-Za-zğüşıiöç1234567890 ]*)/);
-                        var mmatch = command.pattern.toString().match(/(\W*)([A-Za-züşiğ öç1234567890]*)/)[2]
-                    } catch {
-                        var match = [command.pattern];
-                    }
-    
-                    var HANDLER = '';
-    
-                    if (/\[(\W*)\]/.test(Config.HANDLERS)) {
-                        HANDLER = Config.HANDLERS.match(/\[(\W*)\]/)[1][0];
-                    } else {
-                        HANDLER = '.';
-                    }
-                    if (command.desc == '' && !command.usage == '' && command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (match.length >= 3 ? (HANDLER + mmatch) : command.pattern) + '```\n' + '*⌨️ ' + Lang.EXAMPLE + ':* ```' + command.usage + '```\n\n';
-                    }
-                    if (!command.desc == '' && command.usage == '' && command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (match.length >= 3 ? (HANDLER + mmatch) : command.pattern) + '```\n' + '*💬 ' + Lang.DESC + ':* ```' + command.desc + '``` \n\n';
-                    }
-                    if (command.desc == '' && command.usage == '' && !command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (match.length >= 3 ? (HANDLER + mmatch) : command.pattern) + '```\n' + '*⚠️ ' + Lang.WARN + ':* ```' + command.warn + '```\n\n'
-                    }
-                    if (!command.desc == '' && !command.usage == '' && command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (match.length >= 3 ? (HANDLER + mmatch) : command.pattern) + '```\n' + '*💬 ' + Lang.DESC + ':* ```' + command.desc + '``` \n' + '*⌨️ ' + Lang.EXAMPLE + ':* ```' + command.usage + '```\n\n';
-                    }
-                    if (!command.desc == '' && command.usage == '' && !command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (match.length >= 3 ? (HANDLER + mmatch) : command.pattern) + '```\n' + '*💬 ' + Lang.DESC + ':* ```' + command.desc + '``` \n' + '*⚠️ ' + Lang.WARN + ':* ```' + command.warn + '```\n\n'
-                    }
-                    if (command.desc == '' && !command.usage == '' && !command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (match.length >= 3 ? (HANDLER + mmatch) : command.pattern) + '```\n' + '*⌨️ ' + Lang.EXAMPLE + ':* ```' + command.usage + '```\n' + '*⚠️ ' + Lang.WARN + ':* ```' + command.warn + '```\n\n'
-                    }
-                    if  (command.desc == '' && command.usage == '' && command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (match.length >= 3 ? (HANDLER + mmatch) : command.pattern) + '```\n\n'
-                    }
-                    if  (!command.desc == '' && !command.usage == '' && !command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (match.length >= 3 ? (HANDLER + mmatch) : command.pattern) + '```\n' + '*💬 ' + Lang.DESC + ':* ```' + command.desc + '``` \n' + '*⌨️ ' + Lang.EXAMPLE + ':* ```' + command.usage + '```\n' + '*⚠️ ' + Lang.WARN + ':* ```' + command.warn + '```\n\n'
-                    }
-                }
-            );
-            await message.client.sendMessage(
-                message.jid,'●▬▬▬ *WhatsAsena Private* ▬▬▬●\n\n' + CMD_HELP, MessageType.text
-            );    
-        } else {
-            var CMD_HELP = '';
-            Asena.commands.map(
-                async (command) =>  {
-                    if (command.dontAddCommandList || command.pattern === undefined) return;
-                    try {
-                        var cmatch = command.pattern.toString().match(/(\W*)([A-Za-zğüşıiöç1234567890 ]*)/);
-                        var cmmatch = command.pattern.toString().match(/(\W*)([A-Za-züşiğ öç1234567890]*)/)[2]
-                    } catch {
-                        var cmatch = [command.pattern];
-                    }
-                    if (cmmatch.endsWith(' ')) {
-                        var cmmatch = command.pattern.toString().match(/(\W*)([A-Za-züşiğ öç1234567890]*)/)[2].replace(' ', '')
-                    }
-                    if (cmmatch == match[1]) {
-                        var HANDLER = '';
-    
-                        if (/\[(\W*)\]/.test(Config.HANDLERS)) {
-                            HANDLER = Config.HANDLERS.match(/\[(\W*)\]/)[1][0];
-                        } else {
-                            HANDLER = '.';
-                        }
-                        if (command.desc == '' && !command.usage == '' && command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (cmatch.length >= 3 ? (HANDLER + cmmatch) : command.pattern) + '```\n' + '*⌨️ ' + Lang.EXAMPLE + ':* ```' + command.usage + '```\n\n';
-                        }
-                        if (!command.desc == '' && command.usage == '' && command.warn == '') {
-                            CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (cmatch.length >= 3 ? (HANDLER + cmmatch) : command.pattern) + '```\n' + '*💬 ' + Lang.DESC + ':* ```' + command.desc + '``` \n\n';
-                        }
-                        if (command.desc == '' && command.usage == '' && !command.warn == '') {
-                            CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (cmatch.length >= 3 ? (HANDLER + cmmatch) : command.pattern) + '```\n' + '*⚠️ ' + Lang.WARN + ':* ```' + command.warn + '```\n\n'
-                        }
-                        if (!command.desc == '' && !command.usage == '' && command.warn == '') {
-                            CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (cmatch.length >= 3 ? (HANDLER + cmmatch) : command.pattern) + '```\n' + '*💬 ' + Lang.DESC + ':* ```' + command.desc + '``` \n' + '*⌨️ ' + Lang.EXAMPLE + ':* ```' + command.usage + '```\n\n';
-                        }
-                        if (!command.desc == '' && command.usage == '' && !command.warn == '') {
-                            CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (cmatch.length >= 3 ? (HANDLER + cmmatch) : command.pattern) + '```\n' + '*💬 ' + Lang.DESC + ':* ```' + command.desc + '``` \n' + '*⚠️ ' + Lang.WARN + ':* ```' + command.warn + '```\n\n'
-                        }
-                        if (command.desc == '' && !command.usage == '' && !command.warn == '') {
-                            CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (cmatch.length >= 3 ? (HANDLER + cmmatch) : command.pattern) + '```\n' + '*⌨️ ' + Lang.EXAMPLE + ':* ```' + command.usage + '```\n' + '*⚠️ ' + Lang.WARN + ':* ```' + command.warn + '```\n\n'
-                        }
-                        if  (command.desc == '' && command.usage == '' && command.warn == '') {
-                            CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (cmatch.length >= 3 ? (HANDLER + cmmatch) : command.pattern) + '```\n\n'
-                        }
-                        if  (!command.desc == '' && !command.usage == '' && !command.warn == '') {
-                            CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (cmatch.length >= 3 ? (HANDLER + cmmatch) : command.pattern) + '```\n' + '*💬 ' + Lang.DESC + ':* ```' + command.desc + '``` \n' + '*⌨️ ' + Lang.EXAMPLE + ':* ```' + command.usage + '```\n' + '*⚠️ ' + Lang.WARN + ':* ```' + command.warn + '```\n\n'
-                        }
-                    }
-                }
-            );
-            if (CMD_HELP === '') CMD_HELP += Lang.NOT_FOUND;
-            await message.client.sendMessage(
-                message.jid,'●▬▬▬ *WhatsAsena Private* ▬▬▬●\n\n' + CMD_HELP, MessageType.text
-            );
+Asena.addCommand(
+  { pattern: "list ?(.*)", fromMe: true, dontAddCommandList: true },
+  async (message, match) => {
+    let CMD_HELP = ""
+    Asena.commands.map(async (command, index) => {
+      if (
+        command.dontAddCommandList === false &&
+        command.pattern !== undefined
+      ) {
+        try {
+          var match = command.pattern
+            .toString()
+            .match(/(\W*)([A-Za-z0-9ğüşiöç]*)/)
+        } catch {
+          var match = [command.pattern]
         }
-    }));
-}
-else if (Config.WORKTYPE == 'public') {
 
-    Asena.addCommand({pattern: 'asena ?(.*)', fromMe: false, dontAddCommandList: true}, (async (message, match) => {
+        let HANDLER = ""
 
-        var CMD_HELP = '';
-        if (match[1] === '') {
-            Asena.commands.map(
-                async (command) =>  {
-                    if (command.dontAddCommandList || command.pattern === undefined) return;
-                    try {
-                        var match = command.pattern.toString().match(/(\W*)([A-Za-zğüşıiöç1234567890 ]*)/);
-                        var mmatch = command.pattern.toString().match(/(\W*)([A-Za-züşiğ öç1234567890]*)/)[2]
-                    } catch {
-                        var match = [command.pattern];
-                    }
-    
-                    var HANDLER = '';
-    
-                    if (/\[(\W*)\]/.test(Config.HANDLERS)) {
-                        HANDLER = Config.HANDLERS.match(/\[(\W*)\]/)[1][0];
-                    } else {
-                        HANDLER = '.';
-                    }
-                    if (command.desc == '' && !command.usage == '' && command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (match.length >= 3 ? (HANDLER + mmatch) : command.pattern) + '```\n' + '*⌨️ ' + Lang.EXAMPLE + ':* ```' + command.usage + '```\n\n';
-                    }
-                    if (!command.desc == '' && command.usage == '' && command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (match.length >= 3 ? (HANDLER + mmatch) : command.pattern) + '```\n' + '*💬 ' + Lang.DESC + ':* ```' + command.desc + '``` \n\n';
-                    }
-                    if (command.desc == '' && command.usage == '' && !command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (match.length >= 3 ? (HANDLER + mmatch) : command.pattern) + '```\n' + '*⚠️ ' + Lang.WARN + ':* ```' + command.warn + '```\n\n'
-                    }
-                    if (!command.desc == '' && !command.usage == '' && command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (match.length >= 3 ? (HANDLER + mmatch) : command.pattern) + '```\n' + '*💬 ' + Lang.DESC + ':* ```' + command.desc + '``` \n' + '*⌨️ ' + Lang.EXAMPLE + ':* ```' + command.usage + '```\n\n';
-                    }
-                    if (!command.desc == '' && command.usage == '' && !command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (match.length >= 3 ? (HANDLER + mmatch) : command.pattern) + '```\n' + '*💬 ' + Lang.DESC + ':* ```' + command.desc + '``` \n' + '*⚠️ ' + Lang.WARN + ':* ```' + command.warn + '```\n\n'
-                    }
-                    if (command.desc == '' && !command.usage == '' && !command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (match.length >= 3 ? (HANDLER + mmatch) : command.pattern) + '```\n' + '*⌨️ ' + Lang.EXAMPLE + ':* ```' + command.usage + '```\n' + '*⚠️ ' + Lang.WARN + ':* ```' + command.warn + '```\n\n'
-                    }
-                    if  (command.desc == '' && command.usage == '' && command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (match.length >= 3 ? (HANDLER + mmatch) : command.pattern) + '```\n\n'
-                    }
-                    if  (!command.desc == '' && !command.usage == '' && !command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (match.length >= 3 ? (HANDLER + mmatch) : command.pattern) + '```\n' + '*💬 ' + Lang.DESC + ':* ```' + command.desc + '``` \n' + '*⌨️ ' + Lang.EXAMPLE + ':* ```' + command.usage + '```\n' + '*⚠️ ' + Lang.WARN + ':* ```' + command.warn + '```\n\n'
-                    }
-                }
-            );
-            await message.client.sendMessage(
-                message.jid,'●▬▬▬ *WhatsAsena Public* ▬▬▬●\n\n' + CMD_HELP, MessageType.text
-            );    
+        if (/\[(\W*)\]/.test(Config.HANDLERS)) {
+          HANDLER = Config.HANDLERS.match(/\[(\W*)\]/)[1][0]
         } else {
-            var CMD_HELP = '';
-            Asena.commands.map(
-                async (command) =>  {
-                    if (command.dontAddCommandList || command.pattern === undefined) return;
-                    try {
-                        var cmatch = command.pattern.toString().match(/(\W*)([A-Za-zğüşıiöç1234567890 ]*)/);
-                        var cmmatch = command.pattern.toString().match(/(\W*)([A-Za-züşiğ öç1234567890]*)/)[2]
-                    } catch {
-                        var cmatch = [command.pattern];
-                    }
-                    if (cmmatch.endsWith(' ')) {
-                        var cmmatch = command.pattern.toString().match(/(\W*)([A-Za-züşiğ öç1234567890]*)/)[2].replace(' ', '')
-                    }
-                    if (cmmatch == match[1]) {
-                        var HANDLER = '';
-    
-                        if (/\[(\W*)\]/.test(Config.HANDLERS)) {
-                            HANDLER = Config.HANDLERS.match(/\[(\W*)\]/)[1][0];
-                        } else {
-                            HANDLER = '.';
-                        }
-                        if (command.desc == '' && !command.usage == '' && command.warn == '') {
-                        CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (cmatch.length >= 3 ? (HANDLER + cmmatch) : command.pattern) + '```\n' + '*⌨️ ' + Lang.EXAMPLE + ':* ```' + command.usage + '```\n\n';
-                        }
-                        if (!command.desc == '' && command.usage == '' && command.warn == '') {
-                            CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (cmatch.length >= 3 ? (HANDLER + cmmatch) : command.pattern) + '```\n' + '*💬 ' + Lang.DESC + ':* ```' + command.desc + '``` \n\n';
-                        }
-                        if (command.desc == '' && command.usage == '' && !command.warn == '') {
-                            CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (cmatch.length >= 3 ? (HANDLER + cmmatch) : command.pattern) + '```\n' + '*⚠️ ' + Lang.WARN + ':* ```' + command.warn + '```\n\n'
-                        }
-                        if (!command.desc == '' && !command.usage == '' && command.warn == '') {
-                            CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (cmatch.length >= 3 ? (HANDLER + cmmatch) : command.pattern) + '```\n' + '*💬 ' + Lang.DESC + ':* ```' + command.desc + '``` \n' + '*⌨️ ' + Lang.EXAMPLE + ':* ```' + command.usage + '```\n\n';
-                        }
-                        if (!command.desc == '' && command.usage == '' && !command.warn == '') {
-                            CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (cmatch.length >= 3 ? (HANDLER + cmmatch) : command.pattern) + '```\n' + '*💬 ' + Lang.DESC + ':* ```' + command.desc + '``` \n' + '*⚠️ ' + Lang.WARN + ':* ```' + command.warn + '```\n\n'
-                        }
-                        if (command.desc == '' && !command.usage == '' && !command.warn == '') {
-                            CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (cmatch.length >= 3 ? (HANDLER + cmmatch) : command.pattern) + '```\n' + '*⌨️ ' + Lang.EXAMPLE + ':* ```' + command.usage + '```\n' + '*⚠️ ' + Lang.WARN + ':* ```' + command.warn + '```\n\n'
-                        }
-                        if  (command.desc == '' && command.usage == '' && command.warn == '') {
-                            CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (cmatch.length >= 3 ? (HANDLER + cmmatch) : command.pattern) + '```\n\n'
-                        }
-                        if  (!command.desc == '' && !command.usage == '' && !command.warn == '') {
-                            CMD_HELP += '*🛠 ' + Lang.COMMAND + ':* ```' + (cmatch.length >= 3 ? (HANDLER + cmmatch) : command.pattern) + '```\n' + '*💬 ' + Lang.DESC + ':* ```' + command.desc + '``` \n' + '*⌨️ ' + Lang.EXAMPLE + ':* ```' + command.usage + '```\n' + '*⚠️ ' + Lang.WARN + ':* ```' + command.warn + '```\n\n'
-                        }
-                    }
-                }
-            );
-            if (CMD_HELP === '') CMD_HELP += Lang.NOT_FOUND;
-            await message.client.sendMessage(
-                message.jid,'●▬▬▬ *WhatsAsena Public* ▬▬▬●\n\n' + CMD_HELP, MessageType.text
-            );
+          HANDLER = ""
         }
-    }));
-}
+        if (index == 4) CMD_HELP += readmore
+        CMD_HELP += `${index} ${
+          match.length >= 3 ? HANDLER + match[2] : command.pattern
+        }\n${command.desc}\n\n`
+      }
+    })
+            return await message.sendMessage(
+                message.jid,'●▬▬▬ *SHADOW PUBLIC* ▬▬▬●\n\n' + CMD_HELP, MessageType.text
+            )    
+        
+        }
+)
+
+Asena.addCommand(
+  { pattern: "help ?(.*)", fromMe: true, dontAddCommandList: true },
+  async (message, match) => {
+    let CMD_HELP = `╭────────────────╮
+    ᴡʜᴀᴛsᴀᴘᴘ-ʙᴏᴛ
+╰────────────────╯
+
+╭────────────────
+`
+    let commands = []
+    Asena.commands.map(async (command, index) => {
+      if (
+        command.dontAddCommandList === false &&
+        command.pattern !== undefined
+      ) {
+        commands.push(
+          command.pattern.toString().match(/(\W*)([A-Za-z0-9ğüşiöç]*)/)[2]
+        )
+      }
+    })
+    commands.forEach((command, i) => {
+      CMD_HELP += `│ ${i + 1} ${addSpace(
+        i + 1,
+        commands.length
+      )}${textToStylist(command.toUpperCase(), "mono")}\n`
+    })
+    CMD_HELP += `╰────────────────`
+    return await message.sendMessage(
+                message.jid,'●▬▬▬ *SHADOW PUBLIC* ▬▬▬●\n\n' + CMD_HELP, MessageType.text
+            )  
+  }
+)
+
+Asena.addCommand(
+  {
+    pattern: "lydia ?(.*)",
+    fromMe: true,
+    desc: Lang.DESC,
+  },
+  async (message, match) => {
+    let jid = message.isGroup
+      ? message.reply_message == false && message.mention == false
+        ? message.jid
+        : !message.reply_message
+        ? message.mention[0]
+        : message.reply_message.jid
+      : message.jid
+    if (match.startsWith("stop")) {
+      let chat = await getLydia(jid)
+      if (!chat)
+        return await message.sendMessage(
+          Lang.L_NOT_ACTIVATED.format(await getName(jid, message.client))
+        )
+      await setLydia(jid, false)
+      return await message.sendMessage(
+        Lang.L_DEACTIVATED.format(await getName(jid, message.client))
+      )
+    }
+    await setLydia(jid, true)
+    return await message.sendMessage(
+      Lang.L_ACTIVATED.format(await getName(jid, message.client))
+    )
+  }
+)
+
+Asena.addCommand({ on: "text", fromMe: false }, async (message, match) => {
+  let chat = await lydia(message)
+  if (!chat) return
+  return await message.sendMessage(chat, { quoted: message.data })
+})
